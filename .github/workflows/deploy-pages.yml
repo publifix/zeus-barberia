@@ -45,7 +45,12 @@ jobs:
               exit 0
             fi
           done
-          echo "dir=." >> "$GITHUB_OUTPUT"
+          # No build output and no framework: stage only the static site
+          # files (skip repo/dev-only dirs like .github, .claude, scripts).
+          mkdir -p _pages
+          shopt -s extglob dotglob
+          cp -r !(_pages|.git|.github|.claude|scripts|node_modules|README.md) _pages/
+          echo "dir=_pages" >> "$GITHUB_OUTPUT"
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
